@@ -1,4 +1,4 @@
-package com.example.paulgerman.myapplication;
+package com.example.paulgerman.myapplication.Model;
 
 /**
  * Created by PaulGerman on 4/28/19.
