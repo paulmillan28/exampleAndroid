@@ -1,5 +1,7 @@
 package com.example.paulgerman.myapplication;
 
+import android.app.ProgressDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,42 +13,48 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.paulgerman.myapplication.Adapter.MyAdapter;
+import com.example.paulgerman.myapplication.Contracts.ArticuloContracts;
 import com.example.paulgerman.myapplication.Model.Articulo;
-import com.example.paulgerman.myapplication.Services.ArticuloService;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.example.paulgerman.myapplication.Contracts.ArticuloContracts;
+import com.example.paulgerman.myapplication.Repositories.ArticuloRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements ArticuloContracts.View{
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private final String TAG = getClass().getSimpleName();
+    ProgressDialog progressDialog;
+    private ArticuloContracts.Presenter mPresenter;
+    private ArticuloPresenter articuloPresenter =
+            new ArticuloPresenter(
+                    this,
+                    new ArticuloRepository());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        progressDialog = new ProgressDialog(this, R.style.AppTheme);
+        ArticuloPresenter articuloPresenter =
+                new ArticuloPresenter(
+                        this,
+                        new ArticuloRepository());
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Articulo articulo  = new Articulo();
+                articulo.setDescripcion("");
+                articulo.setTipo("");
+                articulo.setImagen("");
+                articulo.setTitulo("");
+                mPresenter.guardarArticulo(articulo);
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -54,77 +62,73 @@ public class MainActivity extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        List<Articulo> list = new ArrayList<>();
-        Articulo a= new Articulo();
-        a.setDescripcion("Es la descripcion 1");
-        a.setImagen("imagen");
-        a.setTipo("lala");
-        a.setTitulo("Es el titulo");
-        Articulo a1= new Articulo();
-        a1.setDescripcion("dos compa");
-        a1.setImagen("imagen");
-        a1.setTipo("lala");
-        a1.setTitulo("titulo dos compa");
-        list.add(a);
-        list.add(a1);
-        mAdapter = new MyAdapter(list);
         recyclerView.setAdapter(mAdapter);
-        loadJSON();
+        mPresenter.obtenerArticulos();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void loadJSON(List<Articulo> data){
+        mAdapter = new MyAdapter(data);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
 
-    private void loadJSON(){
-        Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
+    @Override
+    public void mostrarMensaje(String mensaje) {
+        View view =  getWindow().getDecorView().getRootView();
+        if ( view != null) {
+            Snackbar snackbar = Snackbar.make( view , mensaje, Snackbar.LENGTH_SHORT);
+            View snackbarView = snackbar.getView();
+            TextView textView =
+                    (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setMaxLines(5);
+            snackbar.show();
+        }
+    }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.70:8084/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+    @Override
+    public void mostrarDialogo(String mensaje) {
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(mensaje);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
 
-        ArticuloService restClient = retrofit.create(ArticuloService.class);
-        Call<List<Articulo>> call = restClient.obtenerArticulos();
+        try {
+            progressDialog
+                    .getWindow()
+                    .setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        } catch (Exception e) {
+            Log.e(TAG + ":getProgressDialog", e.toString());
+        }
+        progressDialog.show();
+    }
 
-        call.enqueue(new Callback<List<Articulo>>() {
-            @Override
-            public void onResponse(Call<List<Articulo>> call, Response<List<Articulo>> response) {
-                switch (response.code()) {
-                    case 200:
-                        List<Articulo> data = response.body();
-                        mAdapter = new MyAdapter(data);
-                        recyclerView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-                        break;
-                }
-            }
+    @Override
+    public void ocultarDialogo() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
 
-            @Override
-            public void onFailure(Call<List<Articulo>> call, Throwable t) {
-                Log.e("error", t.toString());
-            }
-        });
+    @Override
+    public void setPresenter(ArticuloContracts.Presenter presenter) {
+        mPresenter=presenter;
     }
 }
