@@ -1,13 +1,10 @@
 package com.example.paulgerman.myapplication.Contracts;
 
-import com.example.paulgerman.myapplication.BasePresenter;
-import com.example.paulgerman.myapplication.BaseView;
+import com.example.paulgerman.myapplication.Base.BasePresenter;
+import com.example.paulgerman.myapplication.Base.BaseView;
 import com.example.paulgerman.myapplication.Model.Articulo;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
 
 /**
  * Created by PaulGerman on 4/28/19.

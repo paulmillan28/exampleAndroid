@@ -1,4 +1,4 @@
-package com.example.paulgerman.myapplication;
+package com.example.paulgerman.myapplication.Base;
 
 public interface BaseView<T> {
 

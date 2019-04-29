@@ -1,5 +1,6 @@
-package com.example.paulgerman.myapplication;
+package com.example.paulgerman.myapplication.presenter;
 
+import com.example.paulgerman.myapplication.Data.ArticuloDataSource;
 import com.example.paulgerman.myapplication.Contracts.ArticuloContracts;
 import com.example.paulgerman.myapplication.Model.Articulo;
 import com.example.paulgerman.myapplication.Repositories.ArticuloRepository;

@@ -1,4 +1,4 @@
-package com.example.paulgerman.myapplication;
+package com.example.paulgerman.myapplication.Services;
 
 import com.example.paulgerman.myapplication.Services.ArticuloService;
 import com.google.gson.FieldNamingPolicy;

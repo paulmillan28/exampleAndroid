@@ -2,8 +2,7 @@ package com.example.paulgerman.myapplication.Repositories;
 
 import android.util.Log;
 
-import com.example.paulgerman.myapplication.Adapter.MyAdapter;
-import com.example.paulgerman.myapplication.ArticuloDataSource;
+import com.example.paulgerman.myapplication.Data.ArticuloDataSource;
 import com.example.paulgerman.myapplication.Model.Articulo;
 import com.example.paulgerman.myapplication.Services.ArticuloService;
 import com.google.gson.FieldNamingPolicy;

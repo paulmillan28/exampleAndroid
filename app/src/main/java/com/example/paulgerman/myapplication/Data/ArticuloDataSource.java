@@ -1,4 +1,4 @@
-package com.example.paulgerman.myapplication;
+package com.example.paulgerman.myapplication.Data;
 
 import com.example.paulgerman.myapplication.Model.Articulo;
 
