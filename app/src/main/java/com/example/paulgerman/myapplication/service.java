@@ -1,14 +1,10 @@
 package com.example.paulgerman.myapplication;
 
-import com.example.paulgerman.myapplication.Model.Articulo;
 import com.example.paulgerman.myapplication.Services.ArticuloService;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
-
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
