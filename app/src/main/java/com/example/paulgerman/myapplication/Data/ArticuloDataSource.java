@@ -10,10 +10,17 @@ public interface ArticuloDataSource {
             ArticuloDataSource.articuloCallback callback);
 
     void guardarArticulos(
-                ArticuloDataSource.articuloCallback callback);
+            Articulo articulo,
+            ArticuloDataSource.guardarArticuloCallback callback);
 
     interface articuloCallback {
         void onSuccess(List<Articulo> articulos);
+
+        void onFailed(String error);
+    }
+
+    interface guardarArticuloCallback {
+        void onSuccess();
 
         void onFailed(String error);
     }

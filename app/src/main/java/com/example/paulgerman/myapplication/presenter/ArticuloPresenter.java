@@ -22,7 +22,19 @@ public class ArticuloPresenter implements ArticuloContracts.Presenter {
 
     @Override
     public void guardarArticulo(Articulo articulo) {
+        mRepository.guardarArticulos(articulo, new ArticuloDataSource.guardarArticuloCallback() {
+            @Override
+            public void onSuccess() {
+                mView.ocultarDialogo();
+                mView.mostrarMensaje("Se guardó correctamente.");
+            }
 
+            @Override
+            public void onFailed(String error) {
+                mView.ocultarDialogo();
+                mView.mostrarMensaje("Ocurrió un error.");
+            }
+        });
     }
 
     @Override

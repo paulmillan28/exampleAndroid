@@ -31,8 +31,9 @@ public class ArticuloRepository implements ArticuloDataSource {
                 .build();
 
     }
+
     @Override
-    public void obtenerArticulos( final articuloCallback callback) {
+    public void obtenerArticulos(final articuloCallback callback) {
         ArticuloService restClient = retrofit.create(ArticuloService.class);
         Call<List<Articulo>> call = restClient.obtenerArticulos();
 
@@ -56,7 +57,25 @@ public class ArticuloRepository implements ArticuloDataSource {
     }
 
     @Override
-    public void guardarArticulos(articuloCallback callback) {
+    public void guardarArticulos(Articulo articulo, final guardarArticuloCallback callback) {
+        ArticuloService restClient = retrofit.create(ArticuloService.class);
+        Call<Void> call = restClient.guardarArticulo(articulo);
 
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                switch (response.code()) {
+                    case 200:
+                        callback.onSuccess();
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("error", t.toString());
+                callback.onFailed(t.toString());
+            }
+        });
     }
 }

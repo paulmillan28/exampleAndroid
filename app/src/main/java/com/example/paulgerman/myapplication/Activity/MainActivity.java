@@ -50,12 +50,7 @@ public class MainActivity extends AppCompatActivity  implements ArticuloContract
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Articulo articulo  = new Articulo();
-                articulo.setDescripcion("");
-                articulo.setTipo("");
-                articulo.setImagen("");
-                articulo.setTitulo("");
-                mPresenter.guardarArticulo(articulo);
+                 guardarArticulo();
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -67,6 +62,15 @@ public class MainActivity extends AppCompatActivity  implements ArticuloContract
         mPresenter.obtenerArticulos();
     }
 
+
+    public void guardarArticulo(){
+        Articulo articulo  = new Articulo();
+        articulo.setDescripcion("Ejemplo");
+        articulo.setTipo("Ejemplo");
+        articulo.setImagen("Ejemplo");
+        articulo.setTitulo("Ejemplo");
+        mPresenter.guardarArticulo(articulo);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
